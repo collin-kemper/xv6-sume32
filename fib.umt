@@ -1,0 +1,71 @@
+v.declfn
+()
+(
+  int       ; 0: start
+  int       ; 1: end
+)
+i.const 0
+set_l   0   ; start = 0
+
+i.memsz
+i.const 2
+i.shr.u
+set_l   1   ; end = memsz>>2
+
+block
+loop
+get_l   0
+get_l   1
+i.eq
+br_if   1   ; while(end != start)
+
+get_l   0
+
+get_l   0
+i.ld32
+call  1   ; fib(mem32[start])
+
+str32       ; mem32[start] = fib(mem32[start])
+
+i.const 1
+get_l 0
+i.add
+set_l   0   ; start += 1
+
+br      0   ; continue
+
+end
+end
+
+ret
+end
+
+i.declfn  ; 1: int fib(int n)
+(
+  int     ; 0: n
+)
+()
+block
+get_l   0
+i.const 1
+i.le.u
+br_if   0   ; if (n <= 1) goto end
+
+get_l   0
+i.const 1
+i.sub
+call  1   ; fib(n-1)
+
+get_l   0
+i.const 2
+i.sub
+call  1   ; fib(n-2)
+
+i.add
+ret         ; return fib(n-2)+fib(n-1)
+
+end         ; end: return n
+get_l   0
+ret
+
+end
